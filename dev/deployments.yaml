@@ -1,0 +1,9 @@
+helloworld:
+  kind: azure_function
+  artifact_name: helloworld
+  artifact_version: 1.4.0
+  artifact_location: https://github.com/olehmart/java-test-app/releases/download/
+  env_vars:
+    - key: GITHUB_SECRET
+      value: ${GITHUB_SECRET}
+  deployment_script: deploy.sh
