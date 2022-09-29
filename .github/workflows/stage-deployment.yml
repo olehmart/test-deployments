@@ -32,10 +32,10 @@ jobs:
 
       # Creates pull request
       - name: Create Pull Request
-        uses: repo-sync/pull-request@v2
+        uses: peter-evans/create-pull-request@v4
         with:
-          source_branch: auto-deployment-prod
-          destination_branch: "main"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "[TEST] Versions update"
-          pr_body: ":robot: **An automated PR** was created due to committed changes in **prod/deployments.yaml**."
+          branch: auto-deployment-prod
+          base: "main"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "[TEST] Versions update"
+          body: ":robot: **An automated PR** was created due to committed changes in **prod/deployments.yaml**."
