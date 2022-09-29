@@ -13,11 +13,10 @@ jobs:
     name: Create PR for DEV changes
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
         with:
           destination_branch: "main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "[DEV] Update versions"
+          pr_title: "[DEV] Versions update"
+          pr_body: ":robot: **An automated PR** was created due to committed changes in `dev/deployments.yaml`."
