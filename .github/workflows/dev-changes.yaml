@@ -18,7 +18,6 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          delete-branch: true
           base: main
           branch: auto-deployment-dev
           title: "[DEV] Update versions"
