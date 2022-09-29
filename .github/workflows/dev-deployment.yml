@@ -38,5 +38,7 @@ jobs:
           base: "main"
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "[TEST] Versions update"
-          body: ":robot: **An automated PR** was created due to committed changes in **test/deployments.yaml**."
+          body: |
+            :robot: **An automated PR** was created due to committed changes in **test/deployments.yaml**.
+            :information_source: By merging this PR, changes will be deployed to Test env!
           commit-message: "auto: propagating DEV changes to Test"
