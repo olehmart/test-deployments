@@ -1,0 +1,22 @@
+name: Create PR for changes in DEV(NEW)
+
+on:
+  push:
+    paths:
+      - dev/deployments.yaml
+    branches:
+      - auto-deployment-dev
+
+jobs:
+  create-pr:
+    name: Create PR for DEV changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          delete-branch: true
+          branch: auto-deployment-dev
+          title: "[DEV] Update versions"
