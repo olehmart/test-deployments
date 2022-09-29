@@ -21,3 +21,4 @@ jobs:
           delete-branch: true
           base: main
           title: "[DEV] Update versions"
+          token: ${{ secrets.GITHUB_TOKEN }}
