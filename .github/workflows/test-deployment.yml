@@ -37,5 +37,6 @@ jobs:
           branch: auto-deployment-stage
           base: "main"
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "[TEST] Versions update"
+          title: "[STAGE] Versions update"
           body: ":robot: **An automated PR** was created due to committed changes in **stage/deployments.yaml**."
+          commit-message: "auto: propagating Test changes to Stage"

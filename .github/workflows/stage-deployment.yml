@@ -37,5 +37,8 @@ jobs:
           branch: auto-deployment-prod
           base: "main"
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "[TEST] Versions update"
-          body: ":robot: **An automated PR** was created due to committed changes in **prod/deployments.yaml**."
+          title: "[PROD] Versions update"
+          body: |
+            :robot: **An automated PR** was created due to committed changes in **prod/deployments.yaml**.
+            :warning: :warning: :warning: By merging this PR, changes will be deployed to PROD env! :warning: :warning: :warning:
+          commit-message: "auto: propagating Stage changes to Prod"
