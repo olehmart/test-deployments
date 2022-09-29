@@ -1,0 +1,41 @@
+name: DEV env deployment
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - dev/deployments.yaml
+    branches:
+      - main
+
+jobs:
+  dev-deployment:
+    name: Deployment to DEV environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Running deployment
+        run: echo "Deploying to DEV"
+
+  trigger-test-env:
+    name: Propagate changes to Test env
+    needs: dev-deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Propagating changes to Test env
+        run: cp -f dev/deployments.yaml test/deployments.yaml
+
+      # Creates pull request
+      - name: Create Pull Request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: auto-deployment-test
+          destination_branch: "main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: "[TEST] Versions update"
+          pr_body: ":robot: **An automated PR** was created due to committed changes in **test/deployments.yaml**."

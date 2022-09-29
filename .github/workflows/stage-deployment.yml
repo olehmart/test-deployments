@@ -1,0 +1,41 @@
+name: Stage env deployment
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - stage/deployments.yaml
+    branches:
+      - main
+
+jobs:
+  stage-deployment:
+    name: Deployment to Stage environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Running deployment
+        run: echo "Deploying to Stage"
+
+  trigger-prod-env:
+    name: Propagate changes to Prod env
+    needs: stage-deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Propagating changes to Prod env
+        run: cp -f stage/deployments.yaml prod/deployments.yaml
+
+      # Creates pull request
+      - name: Create Pull Request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: auto-deployment-prod
+          destination_branch: "main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: "[TEST] Versions update"
+          pr_body: ":robot: **An automated PR** was created due to committed changes in **prod/deployments.yaml**."

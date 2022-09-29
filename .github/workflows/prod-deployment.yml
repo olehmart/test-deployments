@@ -1,0 +1,20 @@
+name: Prod env deployment
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - prod/deployments.yaml
+    branches:
+      - main
+
+jobs:
+  prod-deployment:
+    name: Deployment to Prod environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Running deployment
+        run: echo "Deploying to Prod"
