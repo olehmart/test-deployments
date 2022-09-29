@@ -19,4 +19,5 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           delete-branch: true
+          base: main
           title: "[DEV] Update versions"
