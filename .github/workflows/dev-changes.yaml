@@ -20,5 +20,6 @@ jobs:
         with:
           delete-branch: true
           base: main
+          branch: auto-deployment-dev
           title: "[DEV] Update versions"
           token: ${{ secrets.GITHUB_TOKEN }}
