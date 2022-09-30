@@ -35,4 +35,4 @@ jobs:
           pr_title: "[DEV] Versions update"
           pr_body: |
             :robot: **An automated PR** was created due to committed changes in the following files:
-            ${{ steps.changed-files.outputs.all_changed_files }}"
+            ${{ steps.changed-files.outputs.all_changed_files }}
