@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - test/deployments.yaml
+      - test/*.yml
     branches:
       - main
 
@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Propagating changes to Stage env
-        run: cp -f test/deployments.yaml stage/deployments.yaml
+        run: cp -f test/*.yml stage/
 
       # Creates pull request
       - name: Create Pull Request
@@ -39,6 +39,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "[STAGE] Versions update"
           body: |
-            :robot: **An automated PR** was created due to committed changes in **stage/deployments.yaml**.
+            :robot: **An automated PR** was created due to committed changes in **stage/*.yml**.
             :information_source: By merging this PR, changes will be deployed to Stage env!
           commit-message: "auto: propagating Test changes to Stage"

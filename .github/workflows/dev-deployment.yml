@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - dev/deployments.yaml
+      - dev/*.yml
     branches:
       - main
 
@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Propagating changes to Test env
-        run: cp -f dev/deployments.yaml test/deployments.yaml
+        run: cp -f dev/*.yml test/
 
       # Creates pull request
       - name: Create Pull Request
@@ -39,6 +39,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "[TEST] Versions update"
           body: |
-            :robot: **An automated PR** was created due to committed changes in **test/deployments.yaml**.
+            :robot: **An automated PR** was created due to committed changes in **test/deployments.yml**.
             :information_source: By merging this PR, changes will be deployed to Test env!
           commit-message: "auto: propagating DEV changes to Test"

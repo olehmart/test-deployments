@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - prod/deployments.yaml
+      - prod/*.yml
     branches:
       - main
 
