@@ -15,6 +15,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # Generates list of modified files
+      name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v31
+      with:
+        files: |
+          dev/*.yml
 
       # Creates pull request
       - name: Create Pull Request
@@ -23,4 +33,6 @@ jobs:
           destination_branch: "main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pr_title: "[DEV] Versions update"
-          pr_body: ":robot: **An automated PR** was created due to committed changes in **dev/*.yml**."
+          pr_body: |
+            :robot: **An automated PR** was created due to committed changes in the following files:
+            ${{ steps.changed-files.outputs.all_changed_files }}"
