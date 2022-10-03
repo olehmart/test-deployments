@@ -23,7 +23,7 @@ jobs:
           files: |
             dev/*.yml
       - id: set-matrix
-        run: echo "::set-output name=matrix::[$(echo ${{ steps.changed-files.outputs.all_changed_files }} | sed 's/ /,/g')]"
+        run: echo "::set-output name=matrix::[$(echo ${{ steps.changed-files.outputs.all_changed_files }} | sed 's/ /\",\"/g' | sed 's/^/\"/g' | sed 's/$/\"/g')]"
     outputs:
       deployments: ${{ steps.set-matrix.outputs.matrix }}
 
