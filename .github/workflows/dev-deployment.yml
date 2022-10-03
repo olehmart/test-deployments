@@ -13,6 +13,8 @@ jobs:
     name: Gathering changes
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       # Generates list of modified files
       - name: Get changed files
         id: changed-files
