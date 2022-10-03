@@ -9,15 +9,33 @@ on:
       - main
 
 jobs:
+  pre-deployment:
+    name: Gathering changes
+    runs-on: ubuntu-latest
+    steps:
+      # Generates list of modified files
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v31
+        with:
+          files: |
+            dev/*.yml
+    outputs:
+      deployments: ${{ steps.changed-files.outputs.all_changed_files }}
+
   dev-deployment:
     name: Deployment to DEV environment
+    needs: pre-deployment
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deployment: ${{ needs.pre-release.outputs.deployments }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Running deployment
-        run: echo "Deploying to DEV"
+        run: echo "Deploying ${{ matrix.deployment }} to DEV"
 
   trigger-test-env:
     name: Propagate changes to Test env
