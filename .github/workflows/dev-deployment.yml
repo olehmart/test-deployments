@@ -28,7 +28,7 @@ jobs:
       deployments: ${{ steps.set-matrix.outputs.matrix }}
 
   dev-deployment:
-    name: Deployment to DEV environment
+    name: Deploying ${{ matrix.deployment }} to DEV environment
     needs: pre-deployment
     runs-on: ubuntu-latest
     strategy:
