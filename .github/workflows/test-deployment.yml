@@ -22,6 +22,7 @@ jobs:
         with:
           files: |
             test/*.yml
+      # Exports list of changed files
       - id: set-matrix
         run: echo "::set-output name=matrix::[$(echo ${{ steps.changed-files.outputs.all_changed_files }} | sed 's/ /\",\"/g;s/^/\"/g;s/$/\"/g')]"
     outputs:
@@ -38,7 +39,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
+      # Deployment steps
       - name: Running deployment
         run: echo "Deploying ${{ matrix.deployment }} to Test"
 

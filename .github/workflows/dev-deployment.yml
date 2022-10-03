@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+env:
+  environment: dev
+
 jobs:
   pre-deployment:
     name: Gathering changes
@@ -21,7 +24,8 @@ jobs:
         uses: tj-actions/changed-files@v31
         with:
           files: |
-            dev/*.yml
+            ${{ env.environment }}/*.yml
+      # Exports list of changed files
       - id: set-matrix
         run: echo "::set-output name=matrix::[$(echo ${{ steps.changed-files.outputs.all_changed_files }} | sed 's/ /\",\"/g;s/^/\"/g;s/$/\"/g')]"
     outputs:
@@ -39,8 +43,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # Installs python
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install yq
+
+      # Export parameters
+      - name: Export parameters
+        id: parameters
+        run: |
+          echo "::set-output name=artifact_name::$(yq -r '.artifact_name' ${{ matrix.deployment }})"
+          echo "::set-output name=artifact_location::$(yq -r '.artifact_location' ${{ matrix.deployment }})"
+          echo "::set-output name=artifact_version::$(yq -r '.artifact_version' ${{ matrix.deployment }})"
+          echo "::set-output name=deployment_script::$(yq -r '.deployment_script' ${{ matrix.deployment }})"
+          echo "::set-output name=env_vars::$(yq -r '.env_vars' ${{ matrix.deployment }})"
+          echo "::set-output name=kind::$(yq -r '.kind' ${{ matrix.deployment }})"
+
+      # Deployment steps
       - name: Running deployment
-        run: echo "Deploying ${{ matrix.deployment }} to DEV"
+        run: |
+          echo "Deploying ${{ matrix.deployment }} to DEV environment"
+          echo "Artifact name: ${{ steps.parameters.outputs.artifact_name }}"
+          echo "Artifact location: ${{ steps.parameters.outputs.artifact_location }}"
+          echo "Artifact version: ${{ steps.parameters.outputs.artifact_version }}"
+          echo "Env vars: ${{ steps.parameters.outputs.env_vars }}"
+          echo "Kind: ${{ steps.parameters.outputs.kind }}"
 
   trigger-test-env:
     name: Propagate changes to Test env
@@ -50,8 +79,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # Copies all files from previous environment to the next one
       - name: Propagating changes to Test env
-        run: cp -f dev/*.yml test/
+        run: cp -f ${{ env.environment }}/*.yml test/
 
       # Creates pull request
       - name: Create Pull Request
