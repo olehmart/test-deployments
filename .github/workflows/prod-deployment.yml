@@ -11,6 +11,7 @@ on:
 jobs:
   pre-deployment:
     name: Gathering changes
+    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,6 +30,7 @@ jobs:
 
   prod-deployment:
     name: Deploying ${{ matrix.deployment }} to Prod environment
+    environment: production
     needs: pre-deployment
     strategy:
       matrix:
