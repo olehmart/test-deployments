@@ -91,3 +91,5 @@ jobs:
             :robot: **An automated PR** was created due to changes in **prod/*.yml**.
             :warning: :warning: :warning: By merging this PR, changes will be deployed to PROD env! :warning: :warning: :warning:
           commit-message: "auto: propagating Stage changes to Prod"
+          labels: |
+            automated pr

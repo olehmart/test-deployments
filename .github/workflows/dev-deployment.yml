@@ -95,3 +95,5 @@ jobs:
             :robot: **An automated PR** was created due to changes in **test/deployments.yml**.
             :information_source: By merging this PR, changes will be deployed to Test env!
           commit-message: "auto: propagating DEV changes to Test"
+          labels: |
+            automated pr
