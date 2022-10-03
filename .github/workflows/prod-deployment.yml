@@ -9,12 +9,34 @@ on:
       - main
 
 jobs:
+  pre-deployment:
+    name: Gathering changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Generates list of modified files
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v31
+        with:
+          files: |
+            prod/*.yml
+      - id: set-matrix
+        run: echo "::set-output name=matrix::[$(echo ${{ steps.changed-files.outputs.all_changed_files }} | sed 's/ /\",\"/g;s/^/\"/g;s/$/\"/g')]"
+    outputs:
+      deployments: ${{ steps.set-matrix.outputs.matrix }}
+
   prod-deployment:
-    name: Deployment to Prod environment
+    name: Deploying ${{ matrix.deployment }} to Prod environment
+    needs: pre-deployment
+    strategy:
+      matrix:
+        deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Running deployment
-        run: echo "Deploying to Prod"
+        run: echo "Deploying ${{ matrix.deployment }} to Prod"

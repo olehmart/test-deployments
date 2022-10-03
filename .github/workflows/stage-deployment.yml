@@ -9,15 +9,37 @@ on:
       - main
 
 jobs:
-  stage-deployment:
-    name: Deployment to Stage environment
+  pre-deployment:
+    name: Gathering changes
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Generates list of modified files
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v31
+        with:
+          files: |
+            stage/*.yml
+      - id: set-matrix
+        run: echo "::set-output name=matrix::[$(echo ${{ steps.changed-files.outputs.all_changed_files }} | sed 's/ /\",\"/g;s/^/\"/g;s/$/\"/g')]"
+    outputs:
+      deployments: ${{ steps.set-matrix.outputs.matrix }}
+
+  stage-deployment:
+    name: Deploying ${{ matrix.deployment }} to Stage environment
+    needs: pre-deployment
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Running deployment
-        run: echo "Deploying to Stage"
+        run: echo "Deploying ${{ matrix.deployment }} to Stage"
 
   trigger-prod-env:
     name: Propagate changes to Prod env
@@ -39,6 +61,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "[PROD] Versions update"
           body: |
-            :robot: **An automated PR** was created due to committed changes in **prod/*.yml**.
+            :robot: **An automated PR** was created due to changes in **prod/*.yml**.
             :warning: :warning: :warning: By merging this PR, changes will be deployed to PROD env! :warning: :warning: :warning:
           commit-message: "auto: propagating Stage changes to Prod"
