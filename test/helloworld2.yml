@@ -1,6 +1,6 @@
 artifact_location: https://github.com/olehmart/java-test-app2/releases/download/
 artifact_name: helloworld2
-artifact_version: 1.1.0
+artifact_version: 0.3.0
 deployment_script: deploy.sh
 env_vars:
 - key: GITHUB_SECRET
