@@ -60,7 +60,7 @@ jobs:
           branch: auto-deployment-test
           base: "main"
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "[TEST] Versions update"
+          title: "[AUTO][TEST] Versions update"
           body: |
             :robot: **An automated PR** was created due to changes in **test/deployments.yml**.
             :information_source: By merging this PR, changes will be deployed to Test env!

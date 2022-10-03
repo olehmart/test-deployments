@@ -60,7 +60,7 @@ jobs:
           branch: auto-deployment-stage
           base: "main"
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "[STAGE] Versions update"
+          title: "[AUTO][STAGE] Versions update"
           body: |
             :robot: **An automated PR** was created due to changes in **stage/*.yml**.
             :information_source: By merging this PR, changes will be deployed to Stage env!

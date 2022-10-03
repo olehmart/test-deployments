@@ -60,7 +60,7 @@ jobs:
           branch: auto-deployment-prod
           base: "main"
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "[PROD] Versions update"
+          title: "[AUTO][PROD] Versions update"
           body: |
             :robot: **An automated PR** was created due to changes in **prod/*.yml**.
             :warning: :warning: :warning: By merging this PR, changes will be deployed to PROD env! :warning: :warning: :warning:
