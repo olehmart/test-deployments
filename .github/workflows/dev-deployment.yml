@@ -23,9 +23,10 @@ jobs:
           files: |
             dev/*.yml
       - id: set-matrix
-        run: echo "::set-output name=matrix::[$(echo ${{ steps.changed-files.outputs.all_changed_files }} | sed 's/ /\",\"/g' | sed 's/^/\"/g' | sed 's/$/\"/g')]"
+        run: echo "::set-output name=matrix::[$(echo ${{ steps.changed-files.outputs.all_changed_files }} | sed 's/ /\",\"/g;s/^/\"/g;s/$/\"/g')]"
     outputs:
       deployments: ${{ steps.set-matrix.outputs.matrix }}
+      changed-files: ${{ steps.changed-files.outputs.all_changed_files }}
 
   dev-deployment:
     name: Deploying ${{ matrix.deployment }} to DEV environment
@@ -43,7 +44,7 @@ jobs:
 
   trigger-test-env:
     name: Propagate changes to Test env
-    needs: dev-deployment
+    needs: [dev-deployment, pre-deployment]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -61,6 +62,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "[TEST] Versions update"
           body: |
-            :robot: **An automated PR** was created due to committed changes in **test/deployments.yml**.
+            :robot: **An automated PR** was created due to committed changes in the following files:
+            ${{ needs.pre-deployment.outputs.changed-files }}
+            
             :information_source: By merging this PR, changes will be deployed to Test env!
           commit-message: "auto: propagating DEV changes to Test"
