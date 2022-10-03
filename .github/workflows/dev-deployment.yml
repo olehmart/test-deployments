@@ -22,6 +22,7 @@ jobs:
         with:
           files: |
             dev/*.yml
+      - run: echo "${{ steps.changed-files.outputs.all_changed_files }}"
     outputs:
       deployments: ${{ steps.changed-files.outputs.all_changed_files }}
 
