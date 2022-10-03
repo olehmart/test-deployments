@@ -22,9 +22,10 @@ jobs:
         with:
           files: |
             dev/*.yml
-      - run: echo "${{ steps.changed-files.outputs.all_changed_files }}"
+      - id: set-matrix
+        run: echo "::set-output name=matrix::[$(echo ${{ steps.changed-files.outputs.all_changed_files }} | sed 's/ /,/g']"
     outputs:
-      deployments: ${{ steps.changed-files.outputs.all_changed_files }}
+      deployments: ${{ steps.set-matrix.outputs.matrix }}
 
   dev-deployment:
     name: Deployment to DEV environment
@@ -32,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        deployment: ${{ needs.pre-deployment.outputs.deployments }}
+        deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
