@@ -11,7 +11,6 @@ on:
 jobs:
   pre-deployment:
     name: Gathering changes
-    environment: stage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -45,7 +44,6 @@ jobs:
 
   trigger-prod-env:
     name: Propagate changes to Prod env
-    environment: stage
     needs: stage-deployment
     runs-on: ubuntu-latest
     steps:

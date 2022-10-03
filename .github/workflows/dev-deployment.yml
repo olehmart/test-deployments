@@ -11,7 +11,6 @@ on:
 jobs:
   pre-deployment:
     name: Gathering changes
-    environment: development
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -45,7 +44,6 @@ jobs:
 
   trigger-test-env:
     name: Propagate changes to Test env
-    environment: development
     needs: dev-deployment
     runs-on: ubuntu-latest
     steps:
