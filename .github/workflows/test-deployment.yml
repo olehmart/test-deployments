@@ -39,9 +39,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      # Installs python
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install yq
+
+      # Export parameters
+      - name: Export parameters
+        id: parameters
+        run: |
+          echo "::set-output name=artifact_name::$(yq -c -r '.artifact_name' ${{ matrix.deployment }})"
+          echo "::set-output name=artifact_location::$(yq -c -r '.artifact_location' ${{ matrix.deployment }})"
+          echo "::set-output name=artifact_version::$(yq -c -r '.artifact_version' ${{ matrix.deployment }})"
+          echo "::set-output name=deployment_script::$(yq -c -r '.deployment_script' ${{ matrix.deployment }})"
+          echo "::set-output name=env_vars::$(yq -c -r '.env_vars' ${{ matrix.deployment }})"
+          echo "::set-output name=kind::$(yq -c -r '.kind' ${{ matrix.deployment }})"
+
       # Deployment steps
       - name: Running deployment
-        run: echo "Deploying ${{ matrix.deployment }} to Test"
+        run: |
+          echo "Deploying ${{ matrix.deployment }} to ${{ env.environment }} environment"
+          echo "Artifact name: ${{ steps.parameters.outputs.artifact_name }}"
+          echo "Artifact location: ${{ steps.parameters.outputs.artifact_location }}"
+          echo "Artifact version: ${{ steps.parameters.outputs.artifact_version }}"
+          echo "Env vars: ${{ steps.parameters.outputs.env_vars }}"
+          echo "Kind: ${{ steps.parameters.outputs.kind }}"
 
   trigger-stage-env:
     name: Propagate changes to Stage env

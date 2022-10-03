@@ -54,17 +54,17 @@ jobs:
       - name: Export parameters
         id: parameters
         run: |
-          echo "::set-output name=artifact_name::$(yq -r '.artifact_name' ${{ matrix.deployment }})"
-          echo "::set-output name=artifact_location::$(yq -r '.artifact_location' ${{ matrix.deployment }})"
-          echo "::set-output name=artifact_version::$(yq -r '.artifact_version' ${{ matrix.deployment }})"
-          echo "::set-output name=deployment_script::$(yq -r '.deployment_script' ${{ matrix.deployment }})"
-          echo "::set-output name=env_vars::$(yq -r '.env_vars' ${{ matrix.deployment }})"
-          echo "::set-output name=kind::$(yq -r '.kind' ${{ matrix.deployment }})"
+          echo "::set-output name=artifact_name::$(yq -c -r '.artifact_name' ${{ matrix.deployment }})"
+          echo "::set-output name=artifact_location::$(yq -c -r '.artifact_location' ${{ matrix.deployment }})"
+          echo "::set-output name=artifact_version::$(yq -c -r '.artifact_version' ${{ matrix.deployment }})"
+          echo "::set-output name=deployment_script::$(yq -c -r '.deployment_script' ${{ matrix.deployment }})"
+          echo "::set-output name=env_vars::$(yq -c -r '.env_vars' ${{ matrix.deployment }})"
+          echo "::set-output name=kind::$(yq -c -r '.kind' ${{ matrix.deployment }})"
 
       # Deployment steps
       - name: Running deployment
         run: |
-          echo "Deploying ${{ matrix.deployment }} to DEV environment"
+          echo "Deploying ${{ matrix.deployment }} to ${{ env.environment }} environment"
           echo "Artifact name: ${{ steps.parameters.outputs.artifact_name }}"
           echo "Artifact location: ${{ steps.parameters.outputs.artifact_location }}"
           echo "Artifact version: ${{ steps.parameters.outputs.artifact_version }}"
