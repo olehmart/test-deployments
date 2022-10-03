@@ -26,3 +26,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pr_title: "[AUTO][DEV] Versions update"
           pr_body: ":robot: **An automated PR** was created due to changes in **dev/*.yml**."
+          pr_label: "automated pr"
