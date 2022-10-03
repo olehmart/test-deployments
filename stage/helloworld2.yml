@@ -1,0 +1,8 @@
+artifact_location: https://github.com/olehmart/java-test-app2/releases/download/
+artifact_name: helloworld2
+artifact_version: 1.0.0
+deployment_script: deploy.sh
+env_vars:
+- key: GITHUB_SECRET
+  value: ${GITHUB_SECRET}
+kind: azure_function
