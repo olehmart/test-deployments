@@ -72,6 +72,9 @@ jobs:
           echo "Kind: ${{ steps.parameters.outputs.kind }}"
       # Calls actual deployment
       - uses: ./.github/workflows/${{ steps.parameters.outputs.kind }}_deployment.yml@main
+        with:
+          app-name: ${{ matrix.deployment }}
+          environment: development
 
   trigger-test-env:
     name: Propagate changes to Test env
