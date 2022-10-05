@@ -44,7 +44,7 @@ jobs:
       kind: ${{ steps.check-kind.outputs.kind }}
   deployment:
     needs: check-kind
-    if: contains('azure_function', needs.check-kind.outputs.kind)
+    if: contains('web_app', needs.check-kind.outputs.kind)
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
