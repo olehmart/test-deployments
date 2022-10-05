@@ -73,7 +73,10 @@ jobs:
     outputs:
       kind: ${{ steps.parameters.outputs.kind }}
   deployment:
-    needs: dev-deployment
+    needs: [dev-deployment, pre-deployment]
+    strategy:
+      matrix:
+        deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
     # Calls actual deployment
     uses: olehmart/test-deployments/.github/workflows/azure_function_deployment.yml@main
     if: ${{ needs.dev-deployment.outputs.kind }} == "azure_function"
