@@ -31,51 +31,23 @@ jobs:
     outputs:
       deployments: ${{ steps.set-matrix.outputs.matrix }}
 
-  kind-check:
-    name: Checking kind of App
-    environment: development
-    needs: pre-deployment
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      # Installs python
-      - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - run: pip install yq
-
-      # Export parameters
-      - name: Export parameters
-        id: parameters
-        run: |
-          echo "::set-output name=kind::$(yq -c -r '.kind' ${{ matrix.deployment }})"
-    outputs:
-      kind: ${{ steps.parameters.outputs.kind }}
   deployment-azure-function:
-    needs: [kind-check, pre-deployment]
+    needs: pre-deployment
     strategy:
       matrix:
         deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
     # Calls actual deployment
     uses: olehmart/test-deployments/.github/workflows/azure_function_deployment.yml@main
-    if: contains('azure_function', needs.kind-check.outputs.kind)
     with:
       app-name: ${{ matrix.deployment }}
       environment: development
   deployment-azure-web-app:
-    needs: [ kind-check, pre-deployment ]
+    needs: pre-deployment
     strategy:
       matrix:
         deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
     # Calls actual deployment
     uses: olehmart/test-deployments/.github/workflows/azure_web_app_deployment.yml@main
-    if: contains('web_app', needs.kind-check.outputs.kind)
     with:
       app-name: ${{ matrix.deployment }}
       environment: development

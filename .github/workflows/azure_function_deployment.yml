@@ -22,11 +22,33 @@ on:
         description: Environment to deploy to
 
 jobs:
+  check-kind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Installs python
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install yq
+
+      # Check kind
+      - name: Check kind
+        id: check-kind
+        run: |
+          echo "::set-output name=kind::$(yq -c -r '.kind' ${{ inputs.app-name }})"
+    outputs:
+      kind: ${{ steps.check-kind.outputs.kind }}
   deployment:
+    needs: check-kind
+    if: contains('azure_function', needs.check-kind.outputs.kind)
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-    - name: Deploying app
+    - name: Deploying azure function app
       run: |
         echo "Deploying azure_function"
         echo "APP NAME: ${{ inputs.app-name }}"
