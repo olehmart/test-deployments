@@ -70,8 +70,16 @@ jobs:
           echo "Artifact version: ${{ steps.parameters.outputs.artifact_version }}"
           echo "Env vars: ${{ steps.parameters.outputs.env_vars }}"
           echo "Kind: ${{ steps.parameters.outputs.kind }}"
+    outputs:
+      kind: ${{ steps.parameters.outputs.kind }}
+  deployment:
+    name: Deploying ${{ matrix.deployment }} to DEV environment
+    environment: development
+    needs: dev-deployment
+    runs-on: ubuntu-latest
+    steps:
       # Calls actual deployment
-      - uses: ./.github/workflows/${{ steps.parameters.outputs.kind }}_deployment.yml@main
+      - uses: ./.github/workflows/${{ needs.dev-deployment.outputs.kind }}_deployment.yml@main
         with:
           app-name: ${{ matrix.deployment }}
           environment: development
