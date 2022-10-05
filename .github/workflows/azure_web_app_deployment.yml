@@ -50,6 +50,6 @@ jobs:
     steps:
     - name: Deploying web app
       run: |
-        echo "Deploying web_app"
+        ecrdfdgho "Deploying web_app"
         echo "APP NAME: ${{ inputs.app-name }}"
         echo "ENVIRONMENT: ${{ inputs.environment }}"
