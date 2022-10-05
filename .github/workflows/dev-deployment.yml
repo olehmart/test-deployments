@@ -64,7 +64,7 @@ jobs:
         deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
     # Calls actual deployment
     uses: olehmart/test-deployments/.github/workflows/azure_function_deployment.yml@main
-    if: needs.kind-check.outputs.kind == "azure_function"
+    if: contains('azure_function', needs.kind-check.outputs.kind)
     with:
       app-name: ${{ matrix.deployment }}
       environment: development
@@ -75,7 +75,7 @@ jobs:
         deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
     # Calls actual deployment
     uses: olehmart/test-deployments/.github/workflows/azure_web_app_deployment.yml@main
-    if: needs.kind-check.outputs.kind == "web_app"
+    if: contains('web_app', needs.kind-check.outputs.kind)
     with:
       app-name: ${{ matrix.deployment }}
       environment: development
