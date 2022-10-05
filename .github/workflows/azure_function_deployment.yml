@@ -1,0 +1,31 @@
+on:
+  workflow_call:
+    inputs:
+      app-name:
+        required: true
+        type: string
+        description: Application name
+      environment:
+        required: true
+        type: string
+        description: Environment to deploy to
+  workflow_dispatch:
+    inputs:
+      app-name:
+        required: true
+        type: string
+        description: Application name
+      environment:
+        required: true
+        type: string
+        description: Environment to deploy to
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+    - name: Deploying app
+      run: |
+        echo "APP NAME: ${{ inputs.app-name }}"
+        echo "ENVIRONMENT: ${{ inputs.environment }}"

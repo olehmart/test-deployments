@@ -70,6 +70,8 @@ jobs:
           echo "Artifact version: ${{ steps.parameters.outputs.artifact_version }}"
           echo "Env vars: ${{ steps.parameters.outputs.env_vars }}"
           echo "Kind: ${{ steps.parameters.outputs.kind }}"
+      # Calls actual deployment
+      - uses: ./.github/workflows/${{ steps.parameters.outputs.kind }}_deployment.yml@main
 
   trigger-test-env:
     name: Propagate changes to Test env
