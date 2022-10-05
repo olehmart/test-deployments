@@ -28,6 +28,6 @@ jobs:
     steps:
     - name: Deploying app
       run: |
-        echo "Deploying azure_function"
+        echo "Deploying web app"
         echo "APP NAME: ${{ inputs.app-name }}"
         echo "ENVIRONMENT: ${{ inputs.environment }}"

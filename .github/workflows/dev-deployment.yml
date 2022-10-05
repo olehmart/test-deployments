@@ -31,8 +31,8 @@ jobs:
     outputs:
       deployments: ${{ steps.set-matrix.outputs.matrix }}
 
-  dev-deployment:
-    name: Deploying ${{ matrix.deployment }} to DEV environment
+  kind-check:
+    name: Checking kind of App
     environment: development
     needs: pre-deployment
     runs-on: ubuntu-latest
@@ -54,39 +54,35 @@ jobs:
       - name: Export parameters
         id: parameters
         run: |
-          echo "::set-output name=artifact_name::$(yq -c -r '.artifact_name' ${{ matrix.deployment }})"
-          echo "::set-output name=artifact_location::$(yq -c -r '.artifact_location' ${{ matrix.deployment }})"
-          echo "::set-output name=artifact_version::$(yq -c -r '.artifact_version' ${{ matrix.deployment }})"
-          echo "::set-output name=deployment_script::$(yq -c -r '.deployment_script' ${{ matrix.deployment }})"
-          echo "::set-output name=env_vars::$(yq -c -r '.env_vars' ${{ matrix.deployment }})"
           echo "::set-output name=kind::$(yq -c -r '.kind' ${{ matrix.deployment }})"
-
-      # Deployment steps
-      - name: Running deployment
-        run: |
-          echo "Deploying ${{ matrix.deployment }} to ${{ env.environment }} environment"
-          echo "Artifact name: ${{ steps.parameters.outputs.artifact_name }}"
-          echo "Artifact location: ${{ steps.parameters.outputs.artifact_location }}"
-          echo "Artifact version: ${{ steps.parameters.outputs.artifact_version }}"
-          echo "Env vars: ${{ steps.parameters.outputs.env_vars }}"
-          echo "Kind: ${{ steps.parameters.outputs.kind }}"
     outputs:
       kind: ${{ steps.parameters.outputs.kind }}
-  deployment:
-    needs: [dev-deployment, pre-deployment]
+  deployment-azure-function:
+    needs: [kind-check, pre-deployment]
     strategy:
       matrix:
         deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
     # Calls actual deployment
     uses: olehmart/test-deployments/.github/workflows/azure_function_deployment.yml@main
-    if: ${{ needs.dev-deployment.outputs.kind }} == "azure_function"
+    if: ${{ needs.kind-check.outputs.kind }} == "azure_function"
+    with:
+      app-name: ${{ matrix.deployment }}
+      environment: development
+  deployment-azure-web-app:
+    needs: [ kind-check, pre-deployment ]
+    strategy:
+      matrix:
+        deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
+    # Calls actual deployment
+    uses: olehmart/test-deployments/.github/workflows/azure_web_app_deployment.yml@main
+    if: ${{ needs.kind-check.outputs.kind }} == "web_app"
     with:
       app-name: ${{ matrix.deployment }}
       environment: development
 
   trigger-test-env:
     name: Propagate changes to Test env
-    needs: dev-deployment
+    needs: [deployment-azure-function, deployment-web-app-function]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
