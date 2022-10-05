@@ -29,40 +29,49 @@ jobs:
       - id: set-matrix
         run: echo "::set-output name=matrix::[$(echo ${{ steps.changed-files.outputs.all_changed_files }} | sed 's/ /\",\"/g;s/^/\"/g;s/$/\"/g')]"
     outputs:
-      deployments: ${{ steps.set-matrix.outputs.matrix }}
+      changed_files_list: ${{ steps.set-matrix.outputs.matrix }}
+      changed_files_str: ${{ steps.changed-files.outputs.all_changed_files }}
 
+
+  # Deploy Azure function
   deployment-azure-function:
     needs: pre-deployment
     strategy:
       matrix:
-        deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
-    # Calls actual deployment
+        config: ${{ fromJSON(needs.pre-deployment.outputs.changed_files_list) }}
     uses: olehmart/test-deployments/.github/workflows/azure_function_deployment.yml@main
     with:
-      app-name: ${{ matrix.deployment }}
+      config_file: ${{ matrix.config }}
       environment: development
+
+  # Deploy Azure Web App
   deployment-azure-web-app:
     needs: pre-deployment
     strategy:
       matrix:
-        deployment: ${{ fromJSON(needs.pre-deployment.outputs.deployments) }}
-    # Calls actual deployment
+        config: ${{ fromJSON(needs.pre-deployment.outputs.changed_files_list) }}
     uses: olehmart/test-deployments/.github/workflows/azure_web_app_deployment.yml@main
     with:
-      app-name: ${{ matrix.deployment }}
+      config_file: ${{ matrix.config }}
       environment: development
 
   trigger-test-env:
     name: Propagate changes to Test env
-    needs: [deployment-azure-function, deployment-azure-web-app]
+    needs: [pre-deployment, deployment-azure-function, deployment-azure-web-app]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Copies all files from previous environment to the next one
+      # Updating app version
       - name: Propagating changes to Test env
-        run: cp -f ${{ env.environment }}/*.yml test/
+        run: |
+          for config in ${{ needs.pre-deployment.outputs.changed_files_str }}
+          do
+            export new_version=$(cat ${config} | grep artifact_version | awk '{print $2}')
+            export config_file_name=$(echo ${config} | awk -F/ '{print $(NF)}')
+            sed -i "s/artifact_version: .*/artifact_version: ${new_version}/g" ${config_file_name}
+          done
 
       # Creates pull request
       - name: Create Pull Request
@@ -73,7 +82,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "[AUTO][TEST] Versions update"
           body: |
-            :robot: **An automated PR** was created due to changes in **test/deployments.yml**.
+            :robot: **An automated PR** was created due to changes in **test/*.yml**.
             :information_source: By merging this PR, changes will be deployed to Test env!
           commit-message: "auto: propagating DEV changes to Test"
           labels: |

@@ -1,21 +1,21 @@
-name: Azure function deployment
+name: Azure function app deployment
 on:
   workflow_call:
     inputs:
-      app-name:
+      config_file:
         required: true
         type: string
-        description: Application name
+        description: Config file path
       environment:
         required: true
         type: string
         description: Environment to deploy to
   workflow_dispatch:
     inputs:
-      app-name:
+      config_file:
         required: true
         type: string
-        description: Application name
+        description: Config file path
       environment:
         required: true
         type: string
@@ -39,7 +39,7 @@ jobs:
       - name: Check kind
         id: check-kind
         run: |
-          echo "::set-output name=kind::$(yq -c -r '.kind' ${{ inputs.app-name }})"
+          echo "::set-output name=kind::$(yq -c -r '.kind' ${{ inputs.config_file }})"
     outputs:
       kind: ${{ steps.check-kind.outputs.kind }}
   deployment:
@@ -48,8 +48,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-    - name: Deploying azure function app
-      run: |
-        echo "Deploying azure_function"
-        echo "APP NAME: ${{ inputs.app-name }}"
-        echo "ENVIRONMENT: ${{ inputs.environment }}"
+      - name: Gather parameters
+        run: | 
+          echo "Gathering parameters"
+
+      - name: Deploying azure function app
+        run: |
+          echo "Deploying azure_function"
+          echo "APP NAME: ${{ inputs.config_file }}"
+          echo "ENVIRONMENT: ${{ inputs.environment }}"
