@@ -70,12 +70,13 @@ jobs:
           echo "Artifact version: ${{ steps.parameters.outputs.artifact_version }}"
           echo "Env vars: ${{ steps.parameters.outputs.env_vars }}"
           echo "Kind: ${{ steps.parameters.outputs.kind }}"
-      # Calls actual deployment
-      - uses: ./.github/workflows/azure_function_deployment.yml@main
-        if: ${{ steps.parameters.outputs.kind }} == "azure_function"
-        with:
-          app-name: ${{ matrix.deployment }}
-          environment: development
+  deployment:
+  # Calls actual deployment
+    uses: ./.github/workflows/azure_function_deployment.yml@main
+    if: ${{ steps.parameters.outputs.kind }} == "azure_function"
+    with:
+      app-name: ${{ matrix.deployment }}
+      environment: development
 
   trigger-test-env:
     name: Propagate changes to Test env
