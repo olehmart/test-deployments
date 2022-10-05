@@ -70,10 +70,13 @@ jobs:
           echo "Artifact version: ${{ steps.parameters.outputs.artifact_version }}"
           echo "Env vars: ${{ steps.parameters.outputs.env_vars }}"
           echo "Kind: ${{ steps.parameters.outputs.kind }}"
+    outputs:
+      kind: ${{ steps.parameters.outputs.kind }}
   deployment:
-  # Calls actual deployment
-    uses: ./.github/workflows/azure_function_deployment.yml@main
-    if: ${{ steps.parameters.outputs.kind }} == "azure_function"
+    needs: dev-deployment
+    # Calls actual deployment
+    uses: olehmart/test-deployments/.github/workflows/azure_function_deployment.yml@main
+    if: ${{ needs.dev-deployment.outputs.kind }} == "azure_function"
     with:
       app-name: ${{ matrix.deployment }}
       environment: development
