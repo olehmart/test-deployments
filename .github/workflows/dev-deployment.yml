@@ -82,7 +82,7 @@ jobs:
 
   trigger-test-env:
     name: Propagate changes to Test env
-    needs: [deployment-azure-function, deployment-web-app-function]
+    needs: [deployment-azure-function, deployment-azure-web-app]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
