@@ -55,7 +55,7 @@ for config in CONFIG_FILES_LIST:
     config_file_name = config.split("/")[1]
     if not os.path.exists("{}/{}".format(NEXT_ENV, config_file_name)):
         print("[{0}/{1}]: Skipping update, config file for {0} env doesn't exist...".format(NEXT_ENV, config_file_name))
-        break
+        continue
     with open(config) as f:
         prev_env_config = yaml.load(f, Loader=yaml.FullLoader)
     with open("{}/{}".format(NEXT_ENV, config_file_name)) as f:
