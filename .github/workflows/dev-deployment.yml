@@ -70,17 +70,30 @@ jobs:
           /bin/bash .github/scripts/version_update.sh "${{ needs.pre-deployment.outputs.changed_files_str }}" test
 
       # Creates pull request
+#      - name: Create Pull Request
+#        uses: peter-evans/create-pull-request@v4
+#        if: ${{ steps.changes-propagate.outputs.configs_updated }}
+#        with:
+#          branch: auto-deployment-test
+#          base: "main"
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          title: "[AUTO][TEST] Versions update"
+#          body: |
+#            :robot: **An automated PR** was created due to changes in **test/*.yml**.
+#            :information_source: By merging this PR, changes will be deployed to Test env!
+#          commit-message: "auto: propagating DEV changes to Test"
+#          labels: |
+#            automated pr
+      # Creates pull request
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: repo-sync/pull-request@v2
         if: ${{ steps.changes-propagate.outputs.configs_updated }}
         with:
-          branch: auto-deployment-test
-          base: "main"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "[AUTO][TEST] Versions update"
-          body: |
+          source_branch: "auto-deployment-test"
+          destination_branch: "main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: "[AUTO][TEST] Versions update"
+          pr_body: |
             :robot: **An automated PR** was created due to changes in **test/*.yml**.
             :information_source: By merging this PR, changes will be deployed to Test env!
-          commit-message: "auto: propagating DEV changes to Test"
-          labels: |
-            automated pr
+          pr_label: "automated pr"
