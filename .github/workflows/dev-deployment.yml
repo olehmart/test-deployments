@@ -62,43 +62,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      # Updating apps version
-      - name: Propagating changes to Test env
-        id: changes-propagate
-        run: |
-          /bin/bash .github/scripts/version_update.sh "${{ needs.pre-deployment.outputs.changed_files_str }}" test
-
-      # Creates pull request
-#      - name: Create Pull Request
-#        uses: peter-evans/create-pull-request@v4
-#        if: ${{ steps.changes-propagate.outputs.configs_updated }}
-#        with:
-#          branch: auto-deployment-test
-#          base: "main"
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#          title: "[AUTO][TEST] Versions update"
-#          body: |
-#            :robot: **An automated PR** was created due to changes in **test/*.yml**.
-#            :information_source: By merging this PR, changes will be deployed to Test env!
-#          commit-message: "auto: propagating DEV changes to Test"
-#          labels: |
-#            automated pr
-      # Push changes
-#      - name: Push changes
-#        if: ${{ steps.changes-propagate.outputs.configs_updated }}
-#        run: |
-#          git config user.name GitHub BOT
-#          git config user.email noreply@github.com
-#          git add .
-#          git commit -m "auto: propagating DEV changes to Test"
-#          git push origin auto-deployment-test
-      - uses: EndBug/add-and-commit@v9
         with:
-          message: "auto: propagating DEV changes to Test"
-          committer_name: GitHub Actions
-          committer_email: actions@github.com
-          new_branch: auto-deployment-test
+          fetch-depth: 0
+      # Installs python
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Installs dependencies
+      - name: Install Python dependencies
+        working-directory: '.github/scripts/update_deployments'
+        run: pip install -r requirements.txt
+
+      # Updates versions
+      - name: Update versions
+        run: python .github/scripts/update_deployments/main.py
+        env:
+          CONFIG_FILES_LIST: ${{ needs.pre-deployment.outputs.changed_files_str }}
+          PREV_ENV: dev
+          NEXT_ENV: test
+          MAIN_BRANCH: main
+
       # Creates pull request
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
