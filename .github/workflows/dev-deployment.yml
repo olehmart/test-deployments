@@ -88,7 +88,7 @@ jobs:
       # Creates pull request
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
-        if: steps.changes-propagate.outputs.configs_updated == "True"
+        if: contains("True", steps.changes-propagate.outputs.configs_updated)
         with:
           source_branch: "auto-deployment-test"
           destination_branch: "main"
