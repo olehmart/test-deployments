@@ -85,10 +85,12 @@ jobs:
           NEXT_ENV: test
           MAIN_BRANCH: main
 
+      - run: echo "debugging -> ${{ steps.changes-propagate.outputs.configs_updated }}"
+
       # Creates pull request
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
-        if: fromJSON(steps.changes-propagate.outputs.configs_updated)
+        if: steps.changes-propagate.outputs.configs_updated
         with:
           source_branch: "auto-deployment-test"
           destination_branch: "main"
