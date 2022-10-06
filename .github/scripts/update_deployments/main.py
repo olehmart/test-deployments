@@ -14,7 +14,7 @@ NEXT_ENV = os.environ.get("NEXT_ENV")
 # Variables #
 #############
 destination_branch_name = "auto-deployment-{}".format(NEXT_ENV)
-configs_updated = "false"
+configs_updated = False
 
 
 #######################
@@ -73,17 +73,19 @@ for config in CONFIG_FILES_LIST:
         # Staging changes #
         ###################
         deployments_repo.git.add('{}/{}'.format(NEXT_ENV, config_file_name))
-        configs_updated = "true"
+        configs_updated = True
 
 #####################
 # Creating a commit #
 #####################
-deployments_repo.git.commit("-m", "auto: propagating {} changes to {}".format(PREV_ENV, NEXT_ENV))
+if configs_updated:
+    deployments_repo.git.commit("-m", "auto: propagating {} changes to {}".format(PREV_ENV, NEXT_ENV))
 
 #######################
 # Pushing the changes #
 #######################
-print("Pushing changes ...")
-deployments_repo.git.push("--set-upstream", "origin", destination_branch_name)
+if configs_updated:
+    print("Pushing changes ...")
+    deployments_repo.git.push("--set-upstream", "origin", destination_branch_name)
 
 os.system('echo "::set-output name=configs_updated::{}"'.format(configs_updated))
