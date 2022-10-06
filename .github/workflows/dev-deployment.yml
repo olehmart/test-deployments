@@ -63,19 +63,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Updating app version
+      # Updating apps version
       - name: Propagating changes to Test env
+        id: changes-propagate
         run: |
-          for config in ${{ needs.pre-deployment.outputs.changed_files_str }}
-          do
-            export new_version=$(cat ${config} | grep artifact_version | awk '{print $2}')
-            export config_file_name=$(echo ${config} | awk -F/ '{print $(NF)}')
-            sed -i "s/artifact_version: .*/artifact_version: ${new_version}/g" ${config_file_name}
-          done
+          /bin/bash .github/scripts/version_update.sh "${{ needs.pre-deployment.outputs.changed_files_str }}" test
 
       # Creates pull request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
+        if: ${{ steps.changes-propagate.outputs.configs_updated }}
         with:
           branch: auto-deployment-test
           base: "main"
