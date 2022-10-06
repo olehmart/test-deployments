@@ -10,6 +10,7 @@ from git import Repo
 CONFIG_FILES_LIST = os.environ.get("CONFIG_FILES_LIST").split(" ")
 PREV_ENV = os.environ.get("PREV_ENV")
 NEXT_ENV = os.environ.get("NEXT_ENV")
+MAIN_BRANCH = os.environ.get("MAIN_BRANCH")
 #############
 # Variables #
 #############
@@ -47,6 +48,8 @@ if not branch_exist:
 else:
     print("Branch {} is already exist ...".format(destination_branch_name))
     deployments_repo.git.checkout(destination_branch_name)
+    deployments_repo.git.fetch("origin")
+    deployments_repo.git.merge("origin/{}".format(MAIN_BRANCH))
 
 #########################
 #   Updating versions   #

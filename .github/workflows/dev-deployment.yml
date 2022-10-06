@@ -82,6 +82,7 @@ jobs:
           CONFIG_FILES_LIST: ${{ needs.pre-deployment.outputs.changed_files_str }}
           PREV_ENV: dev
           NEXT_ENV: test
+          MAIN_BRANCH: main
 
       # Creates pull request
       - name: Create Pull Request
