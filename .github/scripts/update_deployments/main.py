@@ -91,4 +91,4 @@ if configs_updated:
     print("Pushing changes ...")
     deployments_repo.git.push("--set-upstream", "origin", destination_branch_name)
 
-os.system('echo "::set-output name=configs_updated::{}"'.format(str(configs_updated).lower()))
+os.system('echo "::set-output name=configs_updated::{}"'.format(configs_updated))
