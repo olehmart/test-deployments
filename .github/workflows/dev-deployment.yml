@@ -85,14 +85,20 @@ jobs:
 #          labels: |
 #            automated pr
       # Push changes
-      - name: Push changes
-        if: ${{ steps.changes-propagate.outputs.configs_updated }}
-        run: |
-          git config user.name GitHub BOT
-          git config user.email noreply@github.com
-          git add .
-          git commit -m "auto: propagating DEV changes to Test"
-          git push origin auto-deployment-test
+#      - name: Push changes
+#        if: ${{ steps.changes-propagate.outputs.configs_updated }}
+#        run: |
+#          git config user.name GitHub BOT
+#          git config user.email noreply@github.com
+#          git add .
+#          git commit -m "auto: propagating DEV changes to Test"
+#          git push origin auto-deployment-test
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: "auto: propagating DEV changes to Test"
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          new_branch: auto-deployment-test
       # Creates pull request
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
