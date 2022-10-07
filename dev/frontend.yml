@@ -1,4 +1,4 @@
 artifact_location: https://github.com/olehmart/java-test-app/releases/download/
 artifact_name: helloworld
-artifact_version: 0.29.0
+artifact_version: 0.30.0
 kind: web_app
