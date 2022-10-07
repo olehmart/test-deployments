@@ -3,5 +3,7 @@ artifact_name: helloworld
 artifact_version: 1.33.0
 kind: web_app
 env:
-  var1: value1
-  var2: value2
+  - key: var1
+    value: value1
+  - key: var2
+    value: value2
