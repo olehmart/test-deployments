@@ -87,7 +87,7 @@ jobs:
           export TEST1=SUBS1
           export TEST2=SUBS2
           export VAR_NAMES_STORAGE=TEST1,TEST2,
-          ./.github/scripts/substitute-env-vars ./.github/scripts/test.js
+          ./.github/scripts/substitute-env-vars ./.github/scripts/*.js
           cat ./.github/scripts/test.js
 
       - name: Deploying web app
