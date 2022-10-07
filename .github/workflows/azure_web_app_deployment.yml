@@ -69,12 +69,12 @@ jobs:
       - name: Downloading artifacts
         run: |
           mkdir -p target
-          wget ${{ steps.parameters.outputs.artifact_location }}/v${{ steps.parameters.outputs.artifact_version }}/${{ steps.parameters.outputs.artifact_name }}-${{ steps.parameters.outputs.artifact_version }}.zip -O artifact.zip
-          unzip artifact.zip -d target
+          wget ${{ steps.parameters.outputs.artifact_location }}/v${{ steps.parameters.outputs.artifact_version }}/${{ steps.parameters.outputs.artifact_name }}-${{ steps.parameters.outputs.artifact_version }}.jar -O artifact.jar # change extension
+# unzip artifact.zip -d target
 
       - name: Deploying web app
         run: |
-          ls -l target/
+          ls -l ./
           echo "Deploying web_app"
           echo "APP NAME: ${{ inputs.config_file }}"
           echo "ENVIRONMENT: ${{ inputs.environment }}"
