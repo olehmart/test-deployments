@@ -67,14 +67,23 @@ jobs:
           echo "::set-output name=artifact_version::$(yq -c -r '.artifact_version' ${{ inputs.config_file }})"
           while IFS=$'\t' read -r key value _; do
             echo "$key=$value" >> $GITHUB_ENV
-          done < <(yq -r '.' ${{ inputs.config_file }} \
-                   | jq -r '.env[] | [.key, .value] | @tsv')
+          done < <(yq -r '.' ${{ inputs.config_file }} | jq -r '.env[] | [.key, .value] | @tsv')
 
       - name: Downloading artifacts
         run: |
           mkdir -p target
           wget ${{ steps.parameters.outputs.artifact_location }}/v${{ steps.parameters.outputs.artifact_version }}/${{ steps.parameters.outputs.artifact_name }}-${{ steps.parameters.outputs.artifact_version }}.jar -O artifact.jar # change extension
 # unzip artifact.zip -d target
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '^1.13.1'
+
+      - run: |
+          CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -a -installsuffix cgo -o substitute-env-vars main.go
+        working-directory: .github/scripts
+
+      - run: ls -l .github/scripts
 
       - name: Deploying web app
         run: |
