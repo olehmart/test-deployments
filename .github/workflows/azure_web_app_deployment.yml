@@ -73,7 +73,9 @@ jobs:
       - name: Downloading artifacts
         run: |
           mkdir -p target
-          wget ${{ steps.parameters.outputs.artifact_location }}/v${{ steps.parameters.outputs.artifact_version }}/${{ steps.parameters.outputs.artifact_name }}-${{ steps.parameters.outputs.artifact_version }}.jar -O artifact.jar # change extension
+          wget ${{ steps.parameters.outputs.artifact_location }}/v${{ steps.parameters.outputs.artifact_version }}\
+          /${{ steps.parameters.outputs.artifact_name }}-${{ steps.parameters.outputs.artifact_version }}.jar \
+          -O artifact.jar # change extension
 # unzip artifact.zip -d target
 
       - uses: actions/setup-go@v3
