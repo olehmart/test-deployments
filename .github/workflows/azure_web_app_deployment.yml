@@ -83,7 +83,13 @@ jobs:
           CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -a -installsuffix cgo -o substitute-env-vars main.go
         working-directory: .github/scripts
 
-      - run: ls -l .github/scripts
+      - run: |
+          export TEST1=SUBS1
+          export TEST2=SUBS2
+          
+          export VAR_NAMES_STORAGE=TEST1,TEST2
+          ./github/scripts/substitute-env-vars ./github/scripts/test.js
+          cat ./github/scripts/test.js
 
       - name: Deploying web app
         run: |
