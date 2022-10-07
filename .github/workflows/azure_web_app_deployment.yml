@@ -65,6 +65,10 @@ jobs:
           echo "::set-output name=artifact_location::$(yq -c -r '.artifact_location' ${{ inputs.config_file }})"
           echo "::set-output name=artifact_name::$(yq -c -r '.artifact_name' ${{ inputs.config_file }})"
           echo "::set-output name=artifact_version::$(yq -c -r '.artifact_version' ${{ inputs.config_file }})"
+          while IFS=$'\t' read -r key value _; do
+            echo "$key=$value" >> $GITHUB_ENV
+          done < <(yq -r '.' ${{ inputs.config_file }} \
+                   | jq -r '.env_vars[] | [.key, .value] | @tsv')
 
       - name: Downloading artifacts
         run: |
@@ -75,6 +79,8 @@ jobs:
       - name: Deploying web app
         run: |
           ls -l ./
+          echo "var1 -> $var1"
+          echo "var2 -> $var2"
           echo "Deploying web_app"
           echo "APP NAME: ${{ inputs.config_file }}"
           echo "ENVIRONMENT: ${{ inputs.environment }}"
