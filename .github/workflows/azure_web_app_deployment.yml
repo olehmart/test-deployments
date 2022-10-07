@@ -65,6 +65,7 @@ jobs:
           echo "::set-output name=artifact_location::$(yq -c -r '.artifact_location' ${{ inputs.config_file }})"
           echo "::set-output name=artifact_name::$(yq -c -r '.artifact_name' ${{ inputs.config_file }})"
           echo "::set-output name=artifact_version::$(yq -c -r '.artifact_version' ${{ inputs.config_file }})"
+          echo "::set-output name=env::$(yq -c -r '.env' ${{ inputs.config_file }})"
           while IFS=$'\t' read -r key value _; do
             echo "$key=$value" >> $GITHUB_ENV
           done < <(yq -r '.' ${{ inputs.config_file }} | jq -r '.env[] | [.key, .value] | @tsv')
@@ -98,3 +99,7 @@ jobs:
           echo "Deploying web_app"
           echo "APP NAME: ${{ inputs.config_file }}"
           echo "ENVIRONMENT: ${{ inputs.environment }}"
+
+      - name: condition debug
+        if: !contains('null', steps.parameters.outputs.env)
+        run: echo "env does exist!!!"
