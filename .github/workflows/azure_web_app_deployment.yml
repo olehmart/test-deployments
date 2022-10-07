@@ -86,7 +86,7 @@ jobs:
       - run: |
           export TEST1=SUBS1
           export TEST2=SUBS2
-          export VAR_NAMES_STORAGE=TEST1,TEST2
+          export VAR_NAMES_STORAGE=TEST1,TEST2,
           ./.github/scripts/substitute-env-vars ./.github/scripts/test.js
           cat ./.github/scripts/test.js
 
