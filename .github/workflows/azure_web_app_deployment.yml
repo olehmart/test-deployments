@@ -101,5 +101,5 @@ jobs:
           echo "ENVIRONMENT: ${{ inputs.environment }}"
 
       - name: condition debug
-        if: !contains('null', steps.parameters.outputs.env)
+        if: ${{ steps.parameters.outputs.env != 'null' }}
         run: echo "env does exist!!!"
