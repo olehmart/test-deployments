@@ -68,7 +68,7 @@ jobs:
           while IFS=$'\t' read -r key value _; do
             echo "$key=$value" >> $GITHUB_ENV
           done < <(yq -r '.' ${{ inputs.config_file }} \
-                   | jq -r '.env_vars[] | [.key, .value] | @tsv')
+                   | jq -r '.env[] | [.key, .value] | @tsv')
 
       - name: Downloading artifacts
         run: |
