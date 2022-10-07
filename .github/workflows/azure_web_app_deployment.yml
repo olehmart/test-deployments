@@ -49,11 +49,22 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
       - name: Gather parameters
+        id: parameters
         run: | 
           echo "Gathering parameters"
+          echo "::set-output name=artifact_location::$(yq -c -r '.artifact_location' ${{ inputs.config_file }})"
+          echo "::set-output name=artifact_name::$(yq -c -r '.artifact_name' ${{ inputs.config_file }})"
+          echo "::set-output name=artifact_version::$(yq -c -r '.artifact_version' ${{ inputs.config_file }})"
+
+      - name: Downloading artifacts
+        run: |
+          mkdir -p target
+          wget ${{ steps.parameters.outputs.artifact_location }}/v${{ steps.parameters.outputs.artifact_version }}/${{ steps.parameters.outputs.artifact_name }}-${{ steps.parameters.outputs.artifact_version }}.zip -O artifact.zip
+          unzip artifact.zip -d target
 
       - name: Deploying web app
         run: |
+          ls -l target/
           echo "Deploying web_app"
           echo "APP NAME: ${{ inputs.config_file }}"
           echo "ENVIRONMENT: ${{ inputs.environment }}"
