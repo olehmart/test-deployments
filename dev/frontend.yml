@@ -7,3 +7,6 @@ env:
     value: value1
   - key: var2
     value: value2
+secrets_env:
+  TEST1: TEST1
+  TEST2: TEST2

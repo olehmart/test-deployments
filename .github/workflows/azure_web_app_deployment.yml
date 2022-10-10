@@ -22,6 +22,30 @@ on:
         description: Environment to deploy to
 
 jobs:
+  test-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Installs python
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install yq
+
+      # Check kind
+      - name: Get secrets
+        id: secrets
+        run: |
+          echo "::set-output name=secrets_env::$(yq -c -r '.secrets_env' ${{ inputs.config_file }})"
+
+      - run: echo "${{ steps.secrets.outputs.secrets_env }}"
+
+
+
+
   check-kind:
     runs-on: ubuntu-latest
     steps:
