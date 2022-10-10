@@ -41,7 +41,12 @@ jobs:
         run: |
           echo "::set-output name=secrets_env::$(yq -c -r '.secrets_env' ${{ inputs.config_file }})"
 
-      - run: echo "${{ steps.secrets.outputs.secrets_env }}"
+      - run: |
+          readarray -t my_array < <(echo '${{ steps.secrets.outputs.secrets_env }}' | jq -c '.[]')
+          for item in "${!my_array[@]}"; do
+            echo "Key: ${item}"
+            echo "Value: ${my_array[$item]}"
+          done
 
 
 
