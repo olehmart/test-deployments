@@ -3,10 +3,10 @@ artifact_name: helloworld
 artifact_version: 1.33.0
 kind: web_app
 env:
-  - key: var1
-    value: value1
-  - key: var2
-    value: value2
+  TEST1: TEST2
+  TEST2: TEST2
+  VERSION: ""
+
 secrets_env:
   TEST1: TEST1
   TEST2: TEST2

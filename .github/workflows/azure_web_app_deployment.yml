@@ -48,6 +48,19 @@ jobs:
             echo "Value: ${my_array[$item]}"
           done
 
+  test-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Substitute environment variables
+        uses: lean-delivery/substitute-env-vars@v1
+        env:
+          SEV_YAML_PATH: ${{ inputs.config_file }}
+          SEV_YAML_KEY: env
+        with:
+          target: .github/scripts/
 
 
 
