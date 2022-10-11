@@ -62,6 +62,8 @@ jobs:
         with:
           target: .github/scripts/
 
+      - run: cat .github/scripts/test.js
+
 
 
   check-kind:
