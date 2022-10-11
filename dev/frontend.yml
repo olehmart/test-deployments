@@ -5,7 +5,7 @@ kind: web_app
 env:
   TEST1: TEST2
   TEST2: TEST2
-  VERSION: ""
+  VERSION: "0.0.0"
 
 secrets_env:
   TEST1: TEST1
