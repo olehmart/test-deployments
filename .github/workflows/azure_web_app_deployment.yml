@@ -59,6 +59,13 @@ jobs:
         env:
           SEV_YAML_PATH: ${{ inputs.config_file }}
           SEV_YAML_KEY: env
+        with:
+          target: .github/scripts/
+
+      - name: Substitute environment variables2
+        uses: lean-delivery/substitute-env-vars@v1
+        env:
+          VAR_NAMES_STORAGE: VERSION
           VERSION: 1.3.0
         with:
           target: .github/scripts/
